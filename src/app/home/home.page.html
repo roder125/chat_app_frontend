@@ -1,0 +1,25 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Chat App</ion-title>
+    <ion-menu-button slot="start"></ion-menu-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" sizeXs="12" sizeSm="10" sizeMd="8" sizeLg="6" sizeXl="5">
+        <channel-list></channel-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="chatbubble-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button><ion-icon name="chatbubble-outline"></ion-icon></ion-fab-button>
+      <ion-fab-button (click)="createNewGroup()"><ion-icon name="chatbubbles-outline"></ion-icon></ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

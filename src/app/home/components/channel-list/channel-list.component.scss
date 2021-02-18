@@ -1,0 +1,21 @@
+ion-list {
+  background: transparent;
+
+  ion-item {
+    --border-radius: 20px;
+    margin-bottom: 8px;
+
+    ion-avatar {
+      margin-right: 8px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      h2 {
+        margin: 0;
+        color: white;
+      }
+    }
+  }
+}

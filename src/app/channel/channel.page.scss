@@ -1,0 +1,25 @@
+
+ion-toolbar {
+  ion-avatar {
+    margin: 4px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    h2 {
+      margin: 0;
+      color: white;
+    }
+  }
+}
+
+ion-footer  {
+  padding: 8px;
+  ion-item {
+    --min-height: 54px;
+    --border-radius: 50px;
+    --background: var(--ion-color-light);
+  }
+
+}

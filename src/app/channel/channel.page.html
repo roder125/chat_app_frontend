@@ -1,0 +1,42 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
+    <ion-title *ngIf="!channel.name">
+      {{chatPartner.name}}
+    </ion-title>
+    <ion-title *ngIf="channel.name">
+      {{channel.name}}
+    </ion-title>
+    <ion-avatar *ngIf="user &&(chatPartner && chatPartner.name)" slot="end" [ngStyle]="{'background': 'var(--ion-color-' + chatPartner.color + ')'}">
+      <h2>
+        {{chatPartner.name.charAt(0)}}
+      </h2>
+    </ion-avatar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-top" [scrollEvents]="true" #ionContent>
+  <ion-grid *ngIf="user">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" sizeXs="12" sizeSm="10" sizeMd="8" sizeLg="6" sizeXl="5">
+        <div class="messages-outer" #messagesList>
+          <messages [setChannel]="channel" [setCurrUser]="user"></messages>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="12" sizeXs="12" sizeSm="10" sizeMd="8" sizeLg="6" sizeXl="5">
+      <ion-item lines="none">
+        <ion-input (keyup.enter)="sendMessage()" type="text" placeholder="Type a message" [(ngModel)]="message.message"></ion-input>
+        <ion-button (click)="sendMessage()" slot="end" fill="clear" color="primary">
+          <ion-icon name="send-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+</ion-footer>

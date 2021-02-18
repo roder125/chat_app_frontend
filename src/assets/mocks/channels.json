@@ -1,0 +1,48 @@
+[
+  {
+    "id": "roomxyz",
+    "members": [
+      {
+        "id": "123",
+        "name": "David",
+        "color": "success",
+        "lastOnline": "14:21 02.16.2021",
+        "online": false
+      },
+      {
+        "id": "xyz",
+        "name": "Roderick",
+        "lastOnline": "13:45 02.16.2021",
+        "online": false
+      }
+    ],
+    "lastMessage": {
+      "message": "Hi, was geht?",
+      "sent": "14:21 02.16.2021",
+      "senderId": "123"
+    },
+    "messages": [
+      {
+        "message": "Moin, kommst du morgen zur Vorlesung?",
+        "sent": "11:11 02.14.2021",
+        "senderId": "123"
+      },
+      {
+        "message": "Jo, bin schon da",
+        "sent": "12:15 02.15.2021",
+        "senderId": "xyz"
+      },
+      {
+        "message": "Mist, hab verschlafen",
+        "sent": "18:21 02.15.2021",
+        "senderId": "123"
+      },
+      {
+        "message": "Hi, was geht heute?",
+        "sent": "14:21 02.16.2021",
+        "senderId": "123"
+      }
+    ]
+
+  }
+]

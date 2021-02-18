@@ -1,0 +1,45 @@
+.messages-list {
+  width: 100%;
+}
+
+.card-float-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+
+  ion-card {
+    border-radius: 0px 20px 20px 20px;
+    -webkit-border-radius: 0px 20px 20px 20px;
+    -moz-border-radius: 0px 20px 20px 20px;
+    -ms-border-radius: 0px 20px 20px 20px;
+    -o-border-radius: 0px 20px 20px 20px;
+
+    ion-card-content {
+      .name {
+        font-weight: bold;
+      }
+      .date {
+        width: 100%;
+        text-align: right;
+        opacity: 0.6;
+      }
+    }
+}
+
+  &.my-message {
+    justify-content: flex-end;
+
+    ion-card {
+      background: var(--ion-color-primary);
+      color: white;
+      border-radius: 20px 0px 20px 20px;
+      -webkit-border-radius: 20px 0px 20px 20px;
+      -moz-border-radius: 20px 0px 20px 20px;
+      -ms-border-radius: 20px 0px 20px 20px;
+      -o-border-radius: 20px 0px 20px 20px;
+  }
+  }
+}
+

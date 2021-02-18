@@ -1,0 +1,26 @@
+<ion-app>
+  <ion-menu side="start" menuId="first" contentId="main">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Start Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle *ngIf="user">
+          <ion-item button (click)="logout()" lines="none">
+            <ion-icon slot="start" name="log-out-outline" color="danger"></ion-icon>
+            <p>Logout</p>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle *ngIf="!user">
+          <ion-item button (click)="openLoginModal()" lines="none">
+            <ion-icon slot="start" name="log-in-outline" color="primary"></ion-icon>
+            <p>Login</p>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main"></ion-router-outlet>
+</ion-app>

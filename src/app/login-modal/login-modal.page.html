@@ -1,0 +1,47 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+    <!-- <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        Close
+      </ion-button>
+    </ion-buttons> -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" sizeXs="12" sizeSm="10" sizeMd="8" sizeLg="8" sizeXl="8">
+        <form #loginForm="ngForm">
+          <ion-icon name="chatbubble-outline"></ion-icon>
+          <ion-list>
+            <div class="input-outer">
+              <ion-item color="light" lines="none">
+                <ion-label position="stacked">Name</ion-label>
+                <ion-input
+                  type="text"
+                  maxlength="25"
+                  minlength="3"
+                  placeholder="How does your friends call you?"
+                  required
+                  [(ngModel)]="user.name"
+                  name="name"
+                  #name="ngModel"
+                  ></ion-input>
+              </ion-item>
+              <div class="error" *ngIf="((name.dirty && name.touched) && name.errors) || submitted && name.errors">
+                <p *ngIf="name.errors.required">Name is required</p>
+                <p *ngIf="name.errors.maxlength">Name is too long (max: 25 chars)</p>
+                <p *ngIf="name.errors.minlength">Name is too short (min: 3 chars)</p>
+              </div>
+            </div>
+
+            <ion-button (click)="login(loginForm); submitted = true;" color="primary">Sing Up</ion-button>
+          </ion-list>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
