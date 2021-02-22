@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { LoginModalPage } from './login-modal/login-modal.page';
 import { AuthService, User } from './services/auth/auth.service';
 import { ChannelService } from './services/channel/channel.service';
+import { WebhooksService } from './services/webhooks/webhooks.service';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,7 @@ export class AppComponent implements OnInit ,OnDestroy {
   //subs
   userSub: Subscription;
 
-  constructor(private auth: AuthService, private modalCtrl: ModalController, private channelsService: ChannelService) {
-
-
-  }
+  constructor(private auth: AuthService, private modalCtrl: ModalController, private channelsService: ChannelService, private webhookService: WebhooksService) {}
 
   ngOnInit() {
     this.auth.getUser().then((res: User) => {
@@ -33,6 +31,11 @@ export class AppComponent implements OnInit ,OnDestroy {
 
     this.userSub = this.auth.getUserValue().subscribe(res => {
       this.user = res;
+      console.log("this.user changed: ", res)
+      if(res && res.token) {
+        // ToDo Init web hook service
+        this.webhookService.webhooksInit(res.token);
+      }
     });
   }
 
