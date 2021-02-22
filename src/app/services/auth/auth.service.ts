@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { StorageService } from '../storage/storage.service';
 
 export interface User {
+  token?: string,
   id: string,
   name: string,
   lastOnline?: string,
@@ -37,7 +38,6 @@ export class AuthService {
         }
       });
     });
-
   }
 
   async loginUser(user: User) {
