@@ -39,32 +39,28 @@ export class ChannelPage implements OnInit, OnDestroy {
     this.activeRoute.params.subscribe(params => {
       this.userSub = this.authService.getUserValue().subscribe(user => {
         this.user = user;
-        if (user) {
+        if (user && user.token) {
           this.user = user;
           this.channel.name = params.id;
           this.channelSub = this.channelService.getChannelsSubjectValue().subscribe((channels: Channel[]) => {
-            console.log(this.channel.name)
-            console.log(channels)
-            if(!channels) {
+            if (!channels) {
               // no channels yet so join
               this.joinChannel();
             } else {
-              console.log("has channels: ", channels)
               let ch = channels.find(c => c.name === this.channel.name);
-              if(!ch) {
-                console.log("has channels but not this one")
+              if (!ch) {
                 this.joinChannel();
               } else {
                 this.channel = ch;
+                this.initScroll();
               }
             }
           });
-        } else {
-          console.log("please login first")
         }
       });
     });
     this.menuCtrl.enable(false);
+    this.message.user = { username: "" }
   }
 
   ngOnDestroy() {
@@ -73,10 +69,25 @@ export class ChannelPage implements OnInit, OnDestroy {
     this.menuCtrl.enable(true);
   }
 
+  ionViewDidEnter() {
+    this.initScroll();
+  }
+
+  initScroll() {
+    if(this.messagesList.nativeElement.offsetHeight === 0) {
+
+      setTimeout(() => {
+        this.initScroll();
+      }, 100);
+    } else {
+      this.scrollContentToBottom();
+    }
+  }
+
   joinChannel() {
     this.channelService.createOrJoinChannel(this.channel).then((res: any) => {
       if (res.status === 'joined') {
-        this.presentToast("Joined channel " + this.channel.name);
+        //this.presentToast("Joined channel " + this.channel.name);
       } else {
         this.presentToast("Created channel " + this.channel.name);
       }
@@ -101,11 +112,21 @@ export class ChannelPage implements OnInit, OnDestroy {
 
   sendMessage() {
     if (this.message.message && this.message.message.length > 0) {
-      this.channel.messages.push({ ...this.message });
-      this.message.message = "";
-      setTimeout(() => {
-        this.scrollContentToBottom();
-      }, 100);
+      this.channelService.messageChannel(this.message.message, this.channel.name).then((res: any) => {
+        this.message.date = new Date().toString();
+        this.message.user.username = this.user.name;
+        if (res.status === "send") {
+          this.channel.messages.push({ ...this.message });
+          this.message.message = "";
+          setTimeout(() => {
+            this.scrollContentToBottom();
+          }, 100);
+        }
+      }).catch(e => {
+        console.log(e);
+      });
+
+
     }
   }
 

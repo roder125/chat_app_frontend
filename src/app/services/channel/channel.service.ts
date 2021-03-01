@@ -16,7 +16,10 @@ export interface Channel {
 
 export interface Message {
   message: string,
-  sender: string
+  user: {
+    username: string
+  },
+  date: string
 }
 
 @Injectable({
@@ -84,14 +87,19 @@ export class ChannelService {
   }
 
   messageChannel(m: string, channel: string) {
-    let body = {
-      identifier: channel,
-      message: m
-    }
-    this.http.post(this.url + "rooms/message/", body).subscribe(res => {
-      console.log("res: ", res)
-    }, error => {
-      console.log("error: ", error)
-    });
+    return new Promise((resolve, reject) => {
+      let body = {
+        identifier: channel,
+        message: m
+      }
+      this.http.post(this.url + "rooms/message/", body).subscribe(res => {
+        console.log("res: ", res)
+        resolve(res);
+      }, error => {
+        reject(error);
+        console.log("error: ", error)
+      });
+    })
+
   }
 }
