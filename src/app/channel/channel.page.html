@@ -1,15 +1,12 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-back-button slot="start" [defaultHref]="'/home'"></ion-back-button>
-    <ion-title *ngIf="!channel.name">
-      {{chatPartner.name}}
-    </ion-title>
     <ion-title *ngIf="channel.name">
       {{channel.name}}
     </ion-title>
-    <ion-avatar *ngIf="user &&(chatPartner && chatPartner.name)" slot="end" [ngStyle]="{'background': 'var(--ion-color-' + chatPartner.color + ')'}">
+    <ion-avatar *ngIf="user &&(chatPartner && chatPartner.name)" slot="end">
       <h2>
-        {{chatPartner.name.charAt(0)}}
+        {{channel.name.charAt(0)}}
       </h2>
     </ion-avatar>
   </ion-toolbar>

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService, User } from '../services/auth/auth.service';
 import { Channel, ChannelService, Message } from '../services/channel/channel.service';
 import * as moment from 'moment';
-import { IonContent, MenuController, ModalController, NavController } from '@ionic/angular';
+import { IonContent, MenuController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { LoginModalPage } from '../login-modal/login-modal.page';
 
@@ -31,23 +31,36 @@ export class ChannelPage implements OnInit, OnDestroy {
     private channelService: ChannelService,
     private authService: AuthService,
     private modalCtrl: ModalController,
+    private toastCtrl: ToastController,
     private navCtrl: NavController,
     private menuCtrl: MenuController) { }
 
   ngOnInit() {
     this.activeRoute.params.subscribe(params => {
       this.userSub = this.authService.getUserValue().subscribe(user => {
-        console.log("USER ---  : ", user)
         this.user = user;
         if (user) {
-          console.log("hat user: ", user)
           this.user = user;
+          this.channel.name = params.id;
           this.channelSub = this.channelService.getChannelsSubjectValue().subscribe((channels: Channel[]) => {
-            if (channels && user) {
-              this.channel = channels.find(c => c.id === params.id);
-              this.chatPartner = this.channel.members.find(m => m.id !== this.user.id);
+            console.log(this.channel.name)
+            console.log(channels)
+            if(!channels) {
+              // no channels yet so join
+              this.joinChannel();
+            } else {
+              console.log("has channels: ", channels)
+              let ch = channels.find(c => c.name === this.channel.name);
+              if(!ch) {
+                console.log("has channels but not this one")
+                this.joinChannel();
+              } else {
+                this.channel = ch;
+              }
             }
           });
+        } else {
+          console.log("please login first")
         }
       });
     });
@@ -60,6 +73,16 @@ export class ChannelPage implements OnInit, OnDestroy {
     this.menuCtrl.enable(true);
   }
 
+  joinChannel() {
+    this.channelService.createOrJoinChannel(this.channel).then((res: any) => {
+      if (res.status === 'joined') {
+        this.presentToast("Joined channel " + this.channel.name);
+      } else {
+        this.presentToast("Created channel " + this.channel.name);
+      }
+    });
+  }
+
   async openLoginModal() {
     const m = await this.modalCtrl.create({
       component: LoginModalPage,
@@ -69,31 +92,28 @@ export class ChannelPage implements OnInit, OnDestroy {
   }
 
   scrollContentToBottom() {
-    console.log(this.messagesList.nativeElement.offsetHeight)
-
     //@ts-ignore
     let distance = (this.content.el.offsetHeight - this.messagesList.nativeElement.offsetHeight) - 16;
     distance = distance * -1;
     console.log(distance)
-
     this.content.scrollToPoint(0, distance, 100);
-    //this.content.scrollToBottom(100);
   }
 
   sendMessage() {
     if (this.message.message && this.message.message.length > 0) {
-      //this.message.
-      this.message.senderId = this.user.id;
-      this.message.sent = moment().format("HH:mm MM-DD");
-      console.log(this.message.sent)
       this.channel.messages.push({ ...this.message });
-
       this.message.message = "";
-      this.message.sent = "";
       setTimeout(() => {
         this.scrollContentToBottom();
       }, 100);
     }
   }
 
+  async presentToast(m) {
+    const t = await this.toastCtrl.create({
+      message: m,
+      duration: 3000
+    });
+    await t.present();
+  }
 }

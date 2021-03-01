@@ -1,5 +1,8 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { InterceptorSkipHeader } from 'src/app/interceptors/jwtInterceptor';
+import { environment } from 'src/environments/environment';
 import { StorageService } from '../storage/storage.service';
 
 export interface User {
@@ -14,26 +17,33 @@ export interface User {
 
 const USER_KEY = "chatAppUser";
 
+const HEADER = new HttpHeaders().set(InterceptorSkipHeader, ''); // skip jwt interceptor
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+  private url = environment.apiUrl;
 
-  constructor(private storageService: StorageService) {
+  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+  private userTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+
+  constructor(private storageService: StorageService, private http: HttpClient) {
     //this.getUser();
   }
 
   async getUser() {
     return new Promise(async resolve => {
       this.storageService.getFromStorage(USER_KEY).then(async res => {
-        console.log("auth service: ", res)
         if(res) {
-          res.id = "xyz";
           this.userSubject.next(res);
+          this.isAuthenticated.next(true);
+          this.userTokenSubject.next(res.token)
           resolve(res);
         } else {
+          this.isAuthenticated.next(false);
           resolve(null);
         }
       });
@@ -41,13 +51,22 @@ export class AuthService {
   }
 
   async loginUser(user: User) {
+    // Todo add backend auth
     return new Promise((resolve, reject) => {
-      this.storageService.setInStorage(USER_KEY, user).then(() => {
-        user.id = "xyz";
+      let body = {
+        username: user.name
+      };
+      this.http.post(this.url + "authenticate/", body).subscribe((res: any) => {
+        console.log("user: ", res);
+        user.token = res.token;
         this.userSubject.next(user);
+        this.isAuthenticated.next(true);
+        this.userTokenSubject.next(user.token);
+        this.storageService.setInStorage(USER_KEY, user);
         resolve(user);
-      }).catch(e => {
-        reject(e);
+      }, error => {
+        reject(error);
+        this.isAuthenticated.next(false);
       });
     });
   }
@@ -56,15 +75,31 @@ export class AuthService {
     return this.userSubject.asObservable();
   }
 
+
   async logout() {
+    // toDo add backend logout
     return new Promise(async (resolve, reject) => {
       this.storageService.dumpStorage().then(() => {
         resolve(true);
         this.userSubject.next(undefined);
+        this.isAuthenticated.next(false);
+        this.userTokenSubject.next(undefined);
       }).catch(e => {
         console.log("error when logging out. ", e.message);
         reject(e);
       });
     });
+  }
+
+  public get currentUserValue() {
+    return this.userSubject.value;
+  }
+
+  public get currentUserTokenValue() {
+    return this.userTokenSubject.value;
+  }
+
+  public get authValue() {
+    return this.isAuthenticated.value;
   }
 }

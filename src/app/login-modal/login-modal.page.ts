@@ -13,6 +13,7 @@ export class LoginModalPage implements OnInit {
 
   user: User = <User>{};
   submitted: boolean = false;
+  usernameError: boolean = false;
 
   constructor(private modalCtrl: ModalController, private auth: AuthService) { }
 
@@ -25,14 +26,12 @@ export class LoginModalPage implements OnInit {
 
   login(form: NgForm) {
     if(form.valid) {
-      let colors = ['primary','secondary', 'tertiary', 'success', 'warning', 'danger', 'dark'];
-      this.user.color = colors[Math.floor(Math.random() * colors.length)];
       this.auth.loginUser(this.user).then(res => {
         console.log("success: ", res);
         this.dismiss();
       }).catch(e => {
         console.log("Ups, something went wrong: ", e.message);
-      })
+      });
     }
   }
 }

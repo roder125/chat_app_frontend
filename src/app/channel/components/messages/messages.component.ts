@@ -17,7 +17,7 @@ export class MessagesComponent implements OnInit {
   ngOnInit() {}
 
   getSenderName(id: string) {
-    return this.channel.members.find(m => m.id === id).name;
+
   }
 
   @Input() set setChannel(value: Channel) {

@@ -14,10 +14,9 @@ export class WebhooksService {
    */
   webhooksInit(token: string){
     this.pushService.init(token).subscribe((res: any) => {
-      console.log(res);
+      console.log("update service: ", res);
       if(res.event === "list.message"){
         console.log("Got Message");
-
       }
     });
  }

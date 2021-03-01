@@ -35,6 +35,7 @@
                 <p *ngIf="name.errors.maxlength">Name is too long (max: 25 chars)</p>
                 <p *ngIf="name.errors.minlength">Name is too short (min: 3 chars)</p>
               </div>
+              <div class="error" *ngIf="usernameError">Username is allready taken.</div>
             </div>
 
             <ion-button (click)="login(loginForm); submitted = true;" color="primary">Sing Up</ion-button>

@@ -1,17 +1,20 @@
 <ion-list>
-  <ion-item *ngFor="let channel of channels" button [routerDirection]="'forward'" [routerLink]="'/channel/' + channel.id" lines="none">
-    <ion-avatar slot="start" [ngStyle]="{'background': 'var(--ion-color-' + channel.members[0].color + ')'}">
+  <ion-item *ngFor="let channel of channels" button [routerDirection]="'forward'" [routerLink]="'/channel/' + channel.name" lines="none">
+    <ion-avatar slot="start">
       <h2>
-        {{channel.members[0].name.charAt(0)}}
+        {{channel.name.charAt(0)}}
       </h2>
     </ion-avatar>
     <ion-label>
       <h2>
-        {{channel.members[0].name}}
+        {{channel.name}}
       </h2>
 
-      <p *ngIf="channel.lastMessage && channel.lastMessage.message">
-        {{channel.lastMessage.message}}
+      <p *ngIf="channel.messages && channel.messages.length > 0">
+        {{channel.messages[channel.messages.length - 1].message}}
+      </p>
+      <p *ngIf="!channel.messages || channel.messages.length <= 0">
+        No messages yet...
       </p>
     </ion-label>
   </ion-item>

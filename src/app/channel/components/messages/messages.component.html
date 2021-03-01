@@ -1,10 +1,10 @@
 <div class="messages-list">
-  <div *ngFor="let message of channel.messages" class="card-float-container" [ngClass]="{'my-message': message.senderId === user.id}">
+  <div *ngFor="let message of channel.messages" class="card-float-container" [ngClass]="{'my-message': message.sender === user.name}">
     <ion-card>
       <ion-card-content>
-        <p class="name" *ngIf="channel.members.length > 1 && message.senderId !== user.id">{{getSenderName(message.senderId)}}</p>
+        <!-- <p class="name" *ngIf="channel.members.length > 1 && message.senderId !== user.id">{{getSenderName(message.senderId)}}</p> -->
         <p>{{message.message}}</p>
-        <p class="date">{{message.sent | date: "HH:mm MM-dd"}}</p>
+        <!-- <p class="date">{{message.sent | date: "HH:mm MM-dd"}}</p> -->
       </ion-card-content>
     </ion-card>
   </div>
