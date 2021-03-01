@@ -44,11 +44,13 @@ export class ChannelPage implements OnInit, OnDestroy {
           this.channel.name = params.id;
           this.channelSub = this.channelService.getChannelsSubjectValue().subscribe((channels: Channel[]) => {
             if (!channels) {
-              // no channels yet so join
+              console.log("has user Token: ", this.user.token)
               this.joinChannel();
             } else {
               let ch = channels.find(c => c.name === this.channel.name);
               if (!ch) {
+                console.log("has user Token and joins when no channel is in local storage ", this.user.token)
+
                 this.joinChannel();
               } else {
                 this.channel = ch;
@@ -67,10 +69,6 @@ export class ChannelPage implements OnInit, OnDestroy {
     this.userSub.unsubscribe();
     this.channelSub.unsubscribe();
     this.menuCtrl.enable(true);
-  }
-
-  ionViewDidEnter() {
-    this.initScroll();
   }
 
   initScroll() {

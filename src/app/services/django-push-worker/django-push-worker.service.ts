@@ -17,7 +17,6 @@ export class DjangoPushWorkerService {
     if (this.swPush.isEnabled) {
       this.swPush.requestSubscription({ serverPublicKey: HOST_VAPID_KEY })
         .then(sub => {
-          console.log("requested sub: ", sub)
           this.postSubscription('subscribe', sub, auth_token).subscribe();
         })
         .catch(err => {
@@ -36,7 +35,6 @@ export class DjangoPushWorkerService {
       })
     };
     const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
-    console.log("Browser: ", browser)
     const data = {
       status_type: statusType,
       subscription: sub.toJSON(),

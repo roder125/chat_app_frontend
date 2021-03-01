@@ -30,9 +30,7 @@ export class AuthService {
   private userTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
-  constructor(private storageService: StorageService, private http: HttpClient) {
-    //this.getUser();
-  }
+  constructor(private storageService: StorageService, private http: HttpClient) {}
 
   async getUser() {
     return new Promise(async resolve => {
@@ -79,14 +77,20 @@ export class AuthService {
   async logout() {
     // toDo add backend logout
     return new Promise(async (resolve, reject) => {
-      this.storageService.dumpStorage().then(() => {
-        resolve(true);
-        this.userSubject.next(undefined);
-        this.isAuthenticated.next(false);
-        this.userTokenSubject.next(undefined);
-      }).catch(e => {
-        console.log("error when logging out. ", e.message);
-        reject(e);
+      let body = {};
+      this.http.post(this.url + "logout/", body).subscribe(res => {
+        this.storageService.dumpStorage().then(() => {
+          resolve(true);
+          this.userSubject.next(undefined);
+          this.isAuthenticated.next(false);
+          this.userTokenSubject.next(undefined);
+        }).catch(e => {
+          console.log("error when logging out. ", e.message);
+          reject(e);
+        });
+      }, error => {
+        console.log("error when logging out at server. ", error);
+        reject(error);
       });
     });
   }

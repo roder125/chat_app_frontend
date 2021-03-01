@@ -16,10 +16,6 @@ export class MessagesComponent implements OnInit {
 
   ngOnInit() {}
 
-  getSenderName(id: string) {
-
-  }
-
   @Input() set setChannel(value: Channel) {
     if(value) {
       this.channel = value;

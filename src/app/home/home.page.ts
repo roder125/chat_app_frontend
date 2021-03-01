@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { NewGroupModalPage } from '../new-group-modal/new-group-modal.page';
-import { ChannelService } from '../services/channel/channel.service';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +9,7 @@ import { ChannelService } from '../services/channel/channel.service';
 })
 export class HomePage {
 
-  constructor(private modalCtrl: ModalController, private channelService: ChannelService) {}
+  constructor(private modalCtrl: ModalController) {}
 
   async createNewGroup() {
     const m = await this.modalCtrl.create({
