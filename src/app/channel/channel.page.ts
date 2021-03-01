@@ -121,12 +121,11 @@ export class ChannelPage implements OnInit, OnDestroy {
           setTimeout(() => {
             this.scrollContentToBottom();
           }, 100);
+          this.channelService.saveChannelLocal(this.channel);
         }
       }).catch(e => {
         console.log(e);
       });
-
-
     }
   }
 

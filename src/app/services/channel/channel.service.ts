@@ -36,12 +36,11 @@ export class ChannelService {
       if (user) {
         this.getAllChannels();
       }
-    })
+    });
   }
 
   async getAllChannels() {
     this.storage.getFromStorage(CHANNELS_KEY).then(res => {
-      console.log(res);
       this.channelsSubject.next(res);
     });
   }
@@ -54,6 +53,17 @@ export class ChannelService {
     return this.channelsSubject.asObservable();
   }
 
+  async saveChannelLocal(channel: Channel) {
+    let channels = this.channelsSubject.getValue();
+    if(channels) {
+      let index =  channels.findIndex(c => c.name === channel.name);
+      if(index > -1 ) {
+        channels[index] = channel;
+      }
+    }
+    await this.storage.setInStorage(CHANNELS_KEY, channels);
+  }
+
   /**
    * return or create a channel by its name
    * @param name
@@ -64,7 +74,6 @@ export class ChannelService {
         identifier: channel.name
       }
       this.http.post(this.url + "rooms/join_or_create/", body).subscribe(async (res: any) => {
-        console.log("res: ", res)
         if (res) {
           channel.messages = res.messages;
           let channels = this.channelsSubject.getValue();
@@ -74,8 +83,7 @@ export class ChannelService {
             channels = [channel];
           }
           this.channelsSubject.next(channels);
-          console.log("channels")
-          //await this.storage.setInStorage(CHANNELS_KEY, []);
+          await this.storage.setInStorage(CHANNELS_KEY, channels);
           resolve(res);
         }
       }, error => {

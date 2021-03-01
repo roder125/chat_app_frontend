@@ -34,7 +34,7 @@ export class AppComponent implements OnInit ,OnDestroy {
       if(res && res.token) {
         // ToDo Init web hook service
         console.log("init webhooks: ", res)
-        //this.webhookService.webhooksInit(res.token);
+        this.webhookService.webhooksInit(res.token);
       }
     });
   }
