@@ -44,7 +44,7 @@ export class NewGroupModalPage implements OnInit, OnDestroy {
   saveChannel(form: NgForm) {
     if (this.user) {
       if (form.valid) {
-        this.channelsService.createOrJoinChannel(this.channel).then((res: any) => {
+        this.channelsService.createOrJoinChannel(this.channel, this.user.token).then((res: any) => {
           if (res.status === 'joined') {
             this.presentToast("Joined channel " + this.channel.name);
           } else {

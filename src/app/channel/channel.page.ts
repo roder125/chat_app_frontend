@@ -38,24 +38,26 @@ export class ChannelPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.activeRoute.params.subscribe(params => {
       this.userSub = this.authService.getUserValue().subscribe(user => {
+        console.count("user")
         this.user = user;
         if (user && user.token) {
           this.user = user;
           this.channel.name = params.id;
           this.channelSub = this.channelService.getChannelsSubjectValue().subscribe((channels: Channel[]) => {
-            if (!channels) {
-              console.log("has user Token: ", this.user.token)
-              this.joinChannel();
-            } else {
+            console.log("channels: ", channels)
+            if(channels && channels.length > 0) {
+              console.log("has");
               let ch = channels.find(c => c.name === this.channel.name);
-              if (!ch) {
-                console.log("has user Token and joins when no channel is in local storage ", this.user.token)
-
-                this.joinChannel();
-              } else {
+              if(ch) {
                 this.channel = ch;
                 this.initScroll();
+              } else {
+                console.log("join channel with eyisting channels")
+                this.joinChannel(user.token);
               }
+            } else {
+              console.log("empty channels")
+              this.joinChannel(user.token);
             }
           });
         }
@@ -72,18 +74,23 @@ export class ChannelPage implements OnInit, OnDestroy {
   }
 
   initScroll() {
-    if(this.messagesList.nativeElement.offsetHeight === 0) {
-
+    if(!this.messagesList) {
       setTimeout(() => {
         this.initScroll();
       }, 100);
     } else {
-      this.scrollContentToBottom();
+      if(this.messagesList.nativeElement.offsetHeight === 0) {
+        setTimeout(() => {
+          this.initScroll();
+        }, 100);
+      } else {
+        this.scrollContentToBottom();
+      }
     }
   }
 
-  joinChannel() {
-    this.channelService.createOrJoinChannel(this.channel).then((res: any) => {
+  joinChannel(token: string) {
+    this.channelService.createOrJoinChannel(this.channel, token).then((res: any) => {
       if (res.status === 'joined') {
         //this.presentToast("Joined channel " + this.channel.name);
       } else {

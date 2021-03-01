@@ -27,8 +27,10 @@ export class LoginModalPage implements OnInit {
   login(form: NgForm) {
     if(form.valid) {
       this.auth.loginUser(this.user).then(res => {
+        this.usernameError = false;
         this.dismiss();
       }).catch(e => {
+        this.usernameError = true;
         console.log("Ups, something went wrong: ", e.message);
       });
     }

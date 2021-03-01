@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CoreEnvironment } from '@angular/compiler/src/compiler_facade_interface';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -29,19 +29,19 @@ export class ChannelService {
 
   private url = environment.apiUrl;
 
-  private channelsSubject: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>(null);
+  private channelsSubject: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
 
-  constructor(private http: HttpClient, private auth: AuthService, private storage: StorageService) {
-    this.auth.getUserValue().subscribe((user: User) => {
-      if (user) {
-        this.getAllChannels();
-      }
-    });
+  constructor(private http: HttpClient, private storage: StorageService) {
+    this.getAllChannels();
   }
 
   async getAllChannels() {
     this.storage.getFromStorage(CHANNELS_KEY).then(res => {
-      this.channelsSubject.next(res);
+      if(res) {
+        this.channelsSubject.next(res);
+      } else {
+        this.channelsSubject.next([]);
+      }
     });
   }
 
@@ -68,17 +68,26 @@ export class ChannelService {
    * return or create a channel by its name
    * @param name
    */
-  createOrJoinChannel(channel: Channel) {
+  createOrJoinChannel(channel: Channel, token: string) {
     return new Promise((resolve, reject) => {
+      let headers = new HttpHeaders({
+        'Authorization': 'Token ' + token
+      })
       let body = {
         identifier: channel.name
       }
-      this.http.post(this.url + "rooms/join_or_create/", body).subscribe(async (res: any) => {
+      console.log("POST: --- create or join channel");
+      this.http.post(this.url + "rooms/join_or_create/", body, {headers: headers}).subscribe(async (res: any) => {
         if (res) {
           channel.messages = res.messages;
           let channels = this.channelsSubject.getValue();
           if (channels) {
-            channels.push(channel);
+            let index = channels.findIndex(c => c.name === channel.name);
+            if(index > -1) {
+              channels[index] = channel;
+            } else {
+              channels.push(channel);
+            }
           } else {
             channels = [channel];
           }
