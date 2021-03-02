@@ -81,6 +81,29 @@ export class ChannelService {
   }
 
   /**
+   * Get messages of channel by its name
+   * @param name
+   */
+  getChannelMessages(name: string, token: string) {
+    return new Promise((resolve,reject) => {
+      let headers = new HttpHeaders({
+        'Authorization': 'Token ' + token
+      });
+      let body =  {
+        identifier: name
+      }
+      this.http.post(this.url + "rooms/get_messages/", body, {headers: headers}).subscribe(res => {
+        resolve(res);
+
+      }, error => {
+        console.log("error when getting messages: ", error);
+        reject(error);
+      });
+    });
+
+  }
+
+  /**
    * return or create a channel by its name
    * @param name
    */
@@ -92,7 +115,6 @@ export class ChannelService {
       let body = {
         identifier: channel.name
       }
-      console.log("POST: --- create or join channel");
       this.http.post(this.url + "rooms/join_or_create/", body, {headers: headers}).subscribe(async (res: any) => {
         if (res) {
           channel.messages = res.messages;
@@ -126,7 +148,6 @@ export class ChannelService {
         message: m
       }
       this.http.post(this.url + "rooms/message/", body).subscribe(res => {
-        console.log("res: ", res)
         resolve(res);
       }, error => {
         reject(error);

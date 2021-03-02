@@ -54,7 +54,6 @@ export class AuthService {
       let body = {
         username: user.name
       };
-      console.log("POST: --- login");
       this.http.post(this.url + "authenticate/", body).subscribe((res: any) => {
         user.token = res.token;
         this.userSubject.next(user);

@@ -35,18 +35,18 @@ export class ChannelPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.activeRoute.params.subscribe(params => {
       this.userSub = this.authService.getUserValue().subscribe(user => {
-        console.count("user")
         this.user = user;
         if (user && user.token) {
           this.user = user;
           this.channel.name = params.id;
           this.channelSub = this.channelService.getChannelsSubjectValue().subscribe((channels: Channel[]) => {
-            console.log("channels: ", channels)
             if(channels && channels.length > 0) {
-              console.log("has");
               let ch = channels.find(c => c.name === this.channel.name);
               if(ch) {
-                console.log("changed: ", ch)
+                this.channelService.getChannelMessages(ch.name, user.token).then((res: any) => {
+                  this.channel.messages = res.messages;
+                  this.channelService.saveChannelLocal(this.channel);
+                });
                 this.channel = ch;
                 setTimeout(() => {
                   this.initScroll();
@@ -93,7 +93,7 @@ export class ChannelPage implements OnInit, OnDestroy {
   joinChannel(token: string) {
     this.channelService.createOrJoinChannel(this.channel, token).then((res: any) => {
       if (res.status === 'joined') {
-        //this.presentToast("Joined channel " + this.channel.name);
+        this.presentToast("Joined channel " + this.channel.name);
       } else {
         this.presentToast("Created channel " + this.channel.name);
       }
@@ -101,11 +101,9 @@ export class ChannelPage implements OnInit, OnDestroy {
   }
 
   scrollContentToBottom() {
-    console.log("scroll down")
     //@ts-ignore
     let distance = (this.content.el.offsetHeight - this.messagesList.nativeElement.offsetHeight) - 16;
     distance = distance * -1;
-    console.log(distance)
     this.content.scrollToPoint(0, distance, 100);
   }
 
