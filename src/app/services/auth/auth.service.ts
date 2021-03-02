@@ -89,6 +89,15 @@ export class AuthService {
           reject(e);
         });
       }, error => {
+        this.storageService.dumpStorage().then(() => {
+          resolve(true);
+          this.userSubject.next(undefined);
+          this.isAuthenticated.next(false);
+          this.userTokenSubject.next(undefined);
+        }).catch(e => {
+          console.log("error when logging out. ", e.message);
+          reject(e);
+        });
         console.log("error when logging out at server. ", error);
         reject(error);
       });

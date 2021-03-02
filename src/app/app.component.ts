@@ -32,11 +32,7 @@ export class AppComponent implements OnInit ,OnDestroy {
     this.userSub = this.auth.getUserValue().subscribe(res => {
       this.user = res;
       if(res && res.token) {
-
-
-        // ToDo Init web hook service
-        //console.log("init webhooks: ", res)
-        //this.webhookService.webhooksInit(res.token);
+        this.webhookService.webhooksInit(res.token);
       }
     });
   }

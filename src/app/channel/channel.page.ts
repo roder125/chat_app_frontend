@@ -30,9 +30,7 @@ export class ChannelPage implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private channelService: ChannelService,
     private authService: AuthService,
-    private modalCtrl: ModalController,
     private toastCtrl: ToastController,
-    private navCtrl: NavController,
     private menuCtrl: MenuController) { }
 
   ngOnInit() {
@@ -49,6 +47,7 @@ export class ChannelPage implements OnInit, OnDestroy {
               console.log("has");
               let ch = channels.find(c => c.name === this.channel.name);
               if(ch) {
+                console.log("changed: ", ch)
                 this.channel = ch;
                 this.initScroll();
               } else {
@@ -99,15 +98,8 @@ export class ChannelPage implements OnInit, OnDestroy {
     });
   }
 
-  async openLoginModal() {
-    const m = await this.modalCtrl.create({
-      component: LoginModalPage,
-      backdropDismiss: false
-    });
-    await m.present();
-  }
-
   scrollContentToBottom() {
+    console.log("scroll down")
     //@ts-ignore
     let distance = (this.content.el.offsetHeight - this.messagesList.nativeElement.offsetHeight) - 16;
     distance = distance * -1;

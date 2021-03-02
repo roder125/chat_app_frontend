@@ -34,7 +34,7 @@ export class DjangoPushWorkerService {
         'Authorization': 'Token ' + auth_token
       })
     };
-    const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
+    const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident|brave)/ig)[0].toLowerCase();
     const data = {
       status_type: statusType,
       subscription: sub.toJSON(),

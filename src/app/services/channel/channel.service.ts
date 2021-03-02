@@ -64,6 +64,22 @@ export class ChannelService {
     await this.storage.setInStorage(CHANNELS_KEY, channels);
   }
 
+  async updateChannelMessages(message: Message, channelName: string) {
+    let channels = this.channelsSubject.getValue();
+    if(channels) {
+      let channel =  channels.find(c => c.name === channelName);
+      if(channel) {
+        if(channel.messages && channel.messages.length > 0) {
+          channel.messages.push(message);
+        } else {
+          channel.messages = [message];
+        }
+      }
+    }
+    this.channelsSubject.next(channels);
+    await this.storage.setInStorage(CHANNELS_KEY, channels);
+  }
+
   /**
    * return or create a channel by its name
    * @param name
