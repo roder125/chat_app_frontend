@@ -2,10 +2,8 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { ActivatedRoute } from '@angular/router';
 import { AuthService, User } from '../services/auth/auth.service';
 import { Channel, ChannelService, Message } from '../services/channel/channel.service';
-import * as moment from 'moment';
-import { IonContent, MenuController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { IonContent, MenuController,ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { LoginModalPage } from '../login-modal/login-modal.page';
 
 @Component({
   selector: 'app-channel',
@@ -19,6 +17,7 @@ export class ChannelPage implements OnInit, OnDestroy {
   user = {} as User;
   messageString: string;
   message: Message = <Message>{};
+  isSending: boolean = false;
 
   @ViewChild('ionContent') content: IonContent;
   @ViewChild('messagesList') messagesList: ElementRef;
@@ -49,7 +48,10 @@ export class ChannelPage implements OnInit, OnDestroy {
               if(ch) {
                 console.log("changed: ", ch)
                 this.channel = ch;
-                this.initScroll();
+                setTimeout(() => {
+                  this.initScroll();
+                }, 200);
+
               } else {
                 console.log("join channel with eyisting channels")
                 this.joinChannel(user.token);
@@ -108,6 +110,7 @@ export class ChannelPage implements OnInit, OnDestroy {
   }
 
   sendMessage() {
+    this.isSending = true;
     if (this.message.message && this.message.message.length > 0) {
       this.channelService.messageChannel(this.message.message, this.channel.name).then((res: any) => {
         this.message.date = new Date().toString();
@@ -115,12 +118,15 @@ export class ChannelPage implements OnInit, OnDestroy {
         if (res.status === "send") {
           this.channel.messages.push({ ...this.message });
           this.message.message = "";
+          this.isSending = false;
           setTimeout(() => {
             this.scrollContentToBottom();
           }, 100);
           this.channelService.saveChannelLocal(this.channel);
         }
       }).catch(e => {
+        this.isSending = false;
+
         console.log(e);
       });
     }
